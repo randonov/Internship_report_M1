@@ -1,0 +1,58 @@
+% !TEX outputDirectory = output
+\documentclass[12pt, a4paper]{report}
+
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{appendix} % annexe
+\usepackage{graphicx} % image
+\usepackage{wrapfig}  % alignement texte p/r image
+\usepackage{float}
+
+\usepackage{url}
+
+\usepackage{pdfpages}
+
+% FOR LEGENDS
+%{\footnotesize\fontfamily{lmss}\selectfont La légende}
+
+
+\begin{document}
+
+\pagenumbering{gobble}
+\thispagestyle{empty}
+
+\input{0_Cover.tex}
+
+\includepdf{AttestationDeNonPlagiat_2019_TODO}
+
+\renewcommand{\baselinestretch}{1.5}
+\input{1_Thanks.tex}
+
+\tableofcontents
+
+\clearpage
+\pagenumbering{arabic}
+
+\input{2_Introduction.tex}
+\input{3_MaterialAndMethods.tex}
+\input{4_Results.tex}
+\input{5_Discussion.tex}
+\input{6_Conclusion.tex}
+
+\pagenumbering{gobble}
+\thispagestyle{empty}
+
+\bibliographystyle{unsrt}
+\bibliography{7_References}
+
+\appendix
+
+\pagenumbering{roman}
+
+\input{A1_HostPresentation.tex}
+\input{A2_PersonalReview.tex}
+
+\end{document}
