@@ -15,8 +15,6 @@
 
 \usepackage{pdfpages}
 
-\usepackage[backend=biber]{biblatex}
-\addbibresource{7_References.bib}
 
 % FOR LEGENDS
 %{\footnotesize\fontfamily{lmss}\selectfont La légende}
@@ -48,7 +46,8 @@
 \pagenumbering{gobble}
 \thispagestyle{empty}
 
-\printbibliography
+\bibliographystyle{unsrt}
+\bibliography{7_References}
 
 \appendix
 
