@@ -50,11 +50,13 @@
 % Pipeline description
 \subsection{Read generation with NanoSim}
 % Obtain FASTA (FASTAQ ?)
+% BY DOMINIQUE
 
 \subsection{Read all vs all alignment with \textsc{blast}n and filter wanted overlap types}
 % Blastn ALL VS ALL > .blastn
 % Filter alignment to keep our description of overlap selectAlignBlast.py : EXPLAIN > .overlap
 % Filter subseq with filter_subseq.py : EXPLAIN WHAT IS REMOVE ACCORDING PROPOSITION > _sf.overlap and dd_infos.save
+% BY DOMINIQUE AND VICTOR (filterSUb)
 
 \subsection{Partitioning the overlap graph in unique connected component}
 % First partitioning with metis
@@ -63,12 +65,15 @@
 % connected component > Pi.overlap, Pj.overlap
 % All the cut edges were kept in overlap file > Pi-j.overlap
 % Other output : a graph of the partitions PG.data
+% BY DOMINIQUE
 
 \subsection{Finding the heaviest path in the partition graph}
 % In order to arrange relative position between reads belonging to different partitions
 % partitions_to_HP_PG_dat.py on PG.data > PG.dat (AMPL input)
 % HP_PG.mod on PG.dat > {X[Pi,Pj]=1} (partition order)
 % HOW IT WORKS ?
+% GIVE COMPLEXITY
+% BY RUMEN AND VICTOR
 
 \subsection{Finding the heaviest path in each read partition}
 % In each partition, AMPL give a path in the read graph : so a read order
@@ -76,6 +81,8 @@
 % Give the neighboored partition allows to know potential candidats for starter,
 % intermediate and terminal reads in the path
 % HP_L.mod on Pi.dat > {X[Ri,Rj]=1} (read order in partition i)
+% GIVE COMPLEXITY
+% BY RUMEN AND VICTOR
 
 \subsection{Link the partitions}
 % TODO
