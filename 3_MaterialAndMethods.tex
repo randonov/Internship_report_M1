@@ -12,22 +12,27 @@
 % -> as a bacteria, has two main inversed repeated region (IRa and IRb)
 % -> circular genome
 
-\subsection{Use of NanoSim - a Oxford Nanopore long read generator}
+\subsection{Use of NanoSim\cite{yang_nanosim:_2017} - a Oxford Nanopore long read generator}
 % SOFTWARE REFERENCES
 % DATE OF CREATION + LAST UPDATE (VERSION)
 % ERROR TYPE AND RATE
 % WHY ?
 
-\subsection{\textsc{ampl} optimization mathematical implementation language}
+\subsection{Use of \textsc{blast}n for overlap alignment}
+% SOFTWARE REFERENCES
+% DATE OF CREATION + LAST UPDATE (VERSION)
+% OPTIONS ALGO
+
+\subsection{Use of \textsc{ampl}\cite{al-baali_ampl_2015} optimization mathematical implementation language}
 % SOFTWARE REFERENCES
 % DATE OF CREATION + LAST UPDATE (VERSION)
 % This is a non-free software
 
-\subsection{Use of \textsc{gurobi} solver to solve the implemented problems in \textsc{ampl}}
+\subsection{Use of \textsc{gurobi}\cite{rothberg_gurobi_nodate} solver to solve the implemented problems in \textsc{ampl}}
 % SOLVER REFERENCES
 % DATE OF CREATION + LAST UPDATE (VERSION)
 
-\subsection{Use of \textsc{metis} - a graph partitioner}
+\subsection{Use of \textsc{metis}\cite{karypis_fast_1998} - a graph partitioner}
 % SOFTWARE REFERENCES
 % DATE OF CREATION + LAST UPDATE (VERSION)
 
@@ -43,6 +48,44 @@
 \section{Methods}
 
 % Pipeline description
-\subsection{Read generation with Nanopore simulator}
+\subsection{Read generation with NanoSim}
+% Obtain FASTA (FASTAQ ?)
+
+\subsection{Read all vs all alignment with \textsc{blast}n and filter wanted overlap types}
+% Blastn ALL VS ALL > .blastn
+% Filter alignment to keep our description of overlap selectAlignBlast.py : EXPLAIN > .overlap
+% Filter subseq with filter_subseq.py : EXPLAIN WHAT IS REMOVE ACCORDING PROPOSITION > _sf.overlap and dd_infos.save
+
+\subsection{Partitioning the overlap graph in unique connected component}
+% First partitioning with metis
+% For each output partition, if it contains more than one connected component,
+% separate them in n other partition, where n is equal to the number of
+% connected component > Pi.overlap, Pj.overlap
+% All the cut edges were kept in overlap file > Pi-j.overlap
+% Other output : a graph of the partitions PG.data
+
+\subsection{Finding the heaviest path in the partition graph}
+% In order to arrange relative position between reads belonging to different partitions
+% partitions_to_HP_PG_dat.py on PG.data > PG.dat (AMPL input)
+% HP_PG.mod on PG.dat > {X[Pi,Pj]=1} (partition order)
+% HOW IT WORKS ?
+
+\subsection{Finding the heaviest path in each read partition}
+% In each partition, AMPL give a path in the read graph : so a read order
+% overlap_to_HP_LR_dat_v1.py on Pi.overlap, Ph-i.overlap and Pi-j.overlap if exist > Pi.dat
+% Give the neighboored partition allows to know potential candidats for starter,
+% intermediate and terminal reads in the path
+% HP_L.mod on Pi.dat > {X[Ri,Rj]=1} (read order in partition i)
+
+\subsection{Link the partitions}
+% TODO
+
+\subsection{Make concesus sequence with adding removed subsequences}
+% A removed subseq is participating to the solution if and only if it alignes in
+% just one place on the pre-concensus
+% TODO
+
+\subsection{Verification of concensus sequence with ?}
+% TODO
 
 \newpage
