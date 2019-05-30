@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: main.aux
+The style file: splncs03.bst
+Database file #1: scaffoldingbiblio.bib
+You've used 15 entries,
+            2785 wiz_defined-function locations,
+            692 strings with 7051 characters,
+and the built_in function-call counts, 9138 in all, are:
+= -- 752
+> -- 290
+< -- 23
++ -- 122
+- -- 104
+* -- 592
+:= -- 1152
+add.period$ -- 17
+call.type$ -- 15
+change.case$ -- 100
+chr.to.int$ -- 0
+cite$ -- 15
+duplicate$ -- 817
+empty$ -- 772
+format.name$ -- 119
+if$ -- 1989
+int.to.chr$ -- 0
+int.to.str$ -- 15
+missing$ -- 168
+newline$ -- 50
+num.names$ -- 30
+pop$ -- 278
+preamble$ -- 1
+purify$ -- 82
+quote$ -- 0
+skip$ -- 258
+stack$ -- 0
+substring$ -- 547
+swap$ -- 508
+text.length$ -- 23
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 58
+warning$ -- 0
+while$ -- 71
+width$ -- 17
+write$ -- 153

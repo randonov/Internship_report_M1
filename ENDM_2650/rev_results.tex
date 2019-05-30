@@ -1,0 +1,141 @@
+\section{Computational results}
+
+Here we present the results obtained on a small set of chloroplast and bacteria  genomes given in Table \ref{tab:data}.  Synthetic sequencing reads have been generated  for these instances applying ART simulator \cite{Huang15022012}. For the read assembly step required to produce contigs  we applied  the well-known \textnormal Minia \cite{minia} with  parameter  {\tt unitig} instead of {\tt contig} (a unitig is a special  kind of a high-confidence contig).
+Minia generates  the set of  unitigs, their repetition factor (the value of $k_i$),  the overlaps between them, as well as the  mate-pair edges and distances.  Based on this data, we generate a graph as explained in Section \ref{sub:Graph_Modelling}. 
+
+%  these unitigs, the overlaps between them, as well as the mate-pair distances, we generated a graph as explained in Section \ref{sub:Graph_Modelling}. 
+\forLaterVersions{The graph generated for  the  Atropa belladonna  genome  is given in  Figure~\ref{fig:Atropa_graph}.}
+
+% The chloroplast genomes are relatively small, but have a particularity that makes them interesting as data for scaffolding. As shown in \cite{Kolodner:1979kx},  chloroplast genomes present an inverted repeat region of approximately 20kbp. We visualize such a repeat region  for  the solution  obtained  for the Atropa belladonna  genome in Figure~\ref{fig:Acorus_solution}.  
+ 
+\forLaterVersions{
+  \begin{figure}[htp]
+      \centering
+      \includegraphics[height=0.6\textwidth,width=0.9\textwidth]{figs/probleme_atropa}
+      \caption{The contig graph  generated for the Atropa belladonna genome. Red/blue vertices correspond respectively to big/small contigs. }
+      \label{fig:Atropa_graph}
+  \end{figure}
+}
+  
+\forLaterVersions{
+    \begin{figure}[p]
+      \centering
+      \includegraphics[height=0.5\textwidth,width=0.9\textwidth]{figs/sous_graphe_atropa.eps}
+      \caption{The reduced contig graph  generated for the Atropa belladonna genome. It contains only red/big vertices and dashed/mate-paires edges. }
+      \label{fig:reduced_Atropa_graph}
+  \end{figure}
+}   
+   
+\forLaterVersions{
+   \begin{figure}[htp]
+      \centering
+ \begin{minipage}[c]{.45\linewidth}
+ \begin{center}
+ \includegraphics[width=5.5cm,height=6cm]{figs/solution_step1_atropa.eps} 
+\end{center}
+ \end{minipage}
+ \begin{minipage}[c]{.5\linewidth}
+\includegraphics[width=5.5cm,height=6cm]{figs/solution_atropa.eps}  
+\end{minipage}
+}
+
+\forLaterVersions{
+      \centering
+      \includegraphics[height=0.4\textwidth,width=0.9\textwidth]{figs/solution_atropa}
+     \caption{The scaffold obtained for Atropa belladonna's genome\forLaterVersions{: ~left--the solution for the reduced contig graph from  Figure~\ref{fig:reduced_Atropa_graph}; ~right-- the previous solution has been extended to the entire  Atropa belladonna genome by  solving the original problem from} shown on Figure~\ref{fig:Atropa_graph}. }
+     \label{fig:Atropa_solution}
+\end{figure}  
+}
+
+% \begin{figure}[p]
+%     \centering
+%     \includegraphics[height=0.5\textwidth,width=0.8\textwidth]{AcorusSolution.png}
+%     \caption{The scaffold obtained from the graph on  Figure~\ref{fig:Acorus_graph}. Yellow vertices indicate the zone of inverted repeats. }
+%     \label{fig:Acorus_solution}
+% \end{figure}
+ 
+
+Our results were obtained on an  Intel(R) Xeon(R) CPU E5-2670 v2 @ 2.50GHz with 20 cores, 64 GB of RAM, and using Gurobi 6.5.1 solver for solving the MILP models. We compared our results with the results obtained by three of the most recent scaffolding tools--  SSPACE \cite{boetzer_scaffolding_2011},  BESST \cite{BESST}, and Scaffmatch  \cite{Mandric17042015}.
+In order to evaluate the   quality of  the produced scaffolds, we applied the QUAST tool  \cite{gurevich_quast:_2013}.
+The results are shown on Table~\ref{tab:tools}.
+ We observe that our tool GST (from Genscale Scaffolding Tool) is the only one that consistently  assembles the complete genome (an unique scaffold in \#scaffolds column) with more than 98\% (and in four cases at least 99.9\%) correctly predicted genome fraction and zero misassembles. 
+ 
+ 
+
+       
+ \input{revised_table1} 
+      
+ \input{revised_table2}     
+      
+ Our next computational experiments focussed on comparing various relaxations and other related formulations for the above described models. 
+ Due to lack of space these results are not presented here, but the interested reader can find them  in \cite{RR_9050}.
+ \forLaterVersions{ 
+ (the computational results  are presented in \cite{RR_9050}) . 
+ %described in the previous section. 
+ Denote %in the sequel  
+ by  BR (Basic Real) the model  defined by  %the linear
+  constraints (\ref{binary_edges}-\ref{flow_condition}) and (\ref{no_cycles_linear}-\ref{upbound})
+%    (\ref{binary_edges}), (\ref{reals}), (\ref{at_most_one}),  (\ref{output-edges}),  (\ref{input-edges}), (\ref{one_paths}),  (\ref{flow_condition}), %(\ref{flow_capacity}), 
+%    (\ref{no_cycles_linear}), 
+%    %(\ref{initial_flow}), 
+%    (\ref{gst_left}),  (\ref{lbound}), (\ref{upbound}) 
+    and objective function (\ref{all_coeff}).
+Let BB (from Basic Binary) denote the same model except that constraint (\ref{reals}) is substituted by its binary variant, i.e. 
+
+             \begin{equation}\label{binary_vertices}
+      \forall v\in V: i_v  \in \{0,1\} \mbox{ and } s_v \in \{0,1\} \mbox{ and } t_v \in \{0,1\}.
+             \end{equation}
+             
+%According to Theorem~\ref{vertices_are_binary}, the models BB and BR are equivalent in quality of the results.  We are interested here in their running time behavior.  
+We study as well the linear programming relaxation of BR (denoted by BR$_{LP}$) where the  binary constraints (\ref{binary_edges}) are substituted by
+   \begin{equation}\label{real_edges}
+    \forall e \in O:  0 \leq x_e \leq 1  \mbox{ and } \forall e \in L:  0 \leq g_e \leq 1.
+   \end{equation}
+   
+     Furthermore, let us omit from BR model  everything  that relates to 
+ mate-pairs distances (i.e. the last term  in the objective function, as well the  constraints (\ref{gst_left}), (\ref{lbound}) and (\ref{upbound})). 
+  We call this model LP (Longest Path)  since it simply targets finding the longest path in the contig graph. 
+  Any solution of this model can be extended to a solution of BR model by a completion $g_e = 0 ~\forall e \in L$. Its optimal value yields a lower bound for the main model BR. 
+  
+
+  %  The results obtained by each one of these models are presented in  Table~\ref{tab:tools1}. From these results we first 
+By experimentally analyzing these models   
+ we observe that, as expected, the model BR significantly outperforms BB in running time, both models being equivalent in quality of the results.. 
+\forLaterVersions{With respect to the quality of the obtained results, the results with the relaxed models are very encouraging.} 
+The upper bounds computed by the linear relaxation  BR$_{LP}$ are extremely close to the
+exact values computed by BR model. Furthermore, the quality of the lower
+bound found by the longest path approach LP is also very good. Interestingly,
+we observed for the given instances that this value is close %almost identical 
+to the genome's size. We presume that the LP model can be used %successfully 
+for predicting the length of the genome when it is unknown.
+
+}
+ %\input{revised_table3}    
+ 
+\forLaterVersions{  
+
+In order to tackle bigger instances and to make the previous models scalable
+ we develop in the sequel the so called multistep step approach. To this end we first classify the contigs as big and small.   The contig  $v$ is called big if $w_v > l_e  ~ \forall e \in L$ holds. All other contigs  are called small.  The set of vertices $V$ is hence the union of big ($B$)  and small ($S$)  contigs, i.e. $V=B\cup S$. Big contigs are visualized as red vertices, while small--as blue  vertices. Moreover, we visualize overlaps as dashed  arrows, while links--as normal arrows  (see Fig. \ref{fig:Atropa_graph}).  The graph $G_R=(B,L)$ will be called reduced config graph--an instance of such a graph is represented on Fig. (\ref{fig:reduced_Atropa_graph}). Amongst the interesting features of the reduced
+contig graph we would like to mention:
+\begin{itemize}
+\item The read coverage of big contigs can be considered more reliable compared to the one of small contigs which is frequently noisy.
+\item The information provided by the big contigs combined with the mate-pair relationships can be very effective for resolving repeated sequences and for obtaining a more complete picture of the genome.
+\item It is highly probable that the reduced graph contains the essential (the biggest portion) of the genome.
+\item The reduced graph is notably smaller compared to the original contig graph and this is extremely beneficial for the performance of our approach.
+\end{itemize}
+
+The above has been confirmed experimentally through the results of the so called multistep step approach that we describe bellow. The first step of this approach consists in applying the LP model to the graph $G_R=(B,L)$ (i.e. we
+search for the longest path in the reduced graph while setting $l_e=0 ~   \forall e \in L$). We obtain in this manner a lower bound and a partial solution which permits 
+to set suitable values for all big contigs. The results obtained from this step are
+reported as RG (Reduced Graph) in Table~\ref{tab:tools1}.
+This partial scaffolding is further completed by gap filling as explained below.
+We apply the BR model to the original graph G, but this time we "help" the
+solver by setting some input parameters, namely: (i) a  partial solution (the values for all big
+contigs) that has been  found  previously  in the reduced graph, (ii)  the value
+computed by LP which is used as a lower bound. The results obtained in this
+way are reported as BR$_P$ in Table~\ref{tab:tools1}. In this way the multistep approach consists
+of 3 steps: LP, RG and BR$_P$ (see Table~\ref{tab:tools1}). This approach was very effective in the case of  
+ Aethionema Cordifolium genome.
+ }     
+
+      

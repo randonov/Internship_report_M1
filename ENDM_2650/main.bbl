@@ -1,0 +1,71 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{boetzer_scaffolding_2011}
+Boetzer, M., Henkel, C.V., Jansen, H.J., Butler, D., Pirovano, W.: Scaffolding
+  pre-assembled contigs using {SSPACE}. Bioinformatics (Oxford, England)
+  27(4),  578--579 (Feb 2011)
+
+\bibitem{Bui2016}
+Bui, Q.T., Deville, Y., Pham, Q.D.: Exact methods for solving the elementary
+  shortest and longest path problems. Annals of Operations Research  244(2),
+  313--348 (2016)
+
+\bibitem{minia}
+Chikhi, R., Rizk, G.: Space-efficient and exact de {Bruijn} graph
+  representation based on a {Bloom} filter. In: WABI. Lecture Notes in Computer
+  Science, vol. 7534, pp. 236--248. Springer (2012)
+
+\bibitem{RR_9050}
+Fran\c{c}ois, S., Andonov, R., Lavenier, D., Djidjev, H.: Global optimization
+  methods for genome scaffolding. Tech. Rep. 9050, INRIA (March 2017)
+
+\bibitem{Garey:1990:CIG:574848}
+Garey, M.R., Johnson, D.S.: Computers and Intractability; A Guide to the Theory
+  of NP-Completeness. W. H. Freeman \& Co., New York, NY, USA (1990)
+
+\bibitem{Gritsenko01062012}
+Gritsenko, A.A., Nijkamp, J.F., Reinders, M.J., Ridder, D.d.: {GRASS}: a
+  generic algorithm for scaffolding next-generation sequencing assemblies.
+  Bioinformatics  28(11),  1429--1437 (2012)
+
+\bibitem{gurevich_quast:_2013}
+Gurevich, A., Saveliev, V., Vyahhi, N., Tesler, G.: {QUAST}: quality assessment
+  tool for genome assemblies. Bioinformatics  29(8),  1072--1075 (Apr 2013)
+
+\bibitem{Huang15022012}
+Huang, W., Li, L., Myers, J.R., Marth, G.T.: Art: a next-generation sequencing
+  read simulator. Bioinformatics  28(4),  593--594 (2012)
+
+\bibitem{huson_greedy_2002}
+Huson, D.H., Reinert, K., Myers, E.W.: The greedy path-merging algorithm for
+  contig scaffolding. J. ACM  49(5),  603--615 (2002)
+
+\bibitem{Mandric17042015}
+Mandric, I., Zelikovsky, A.: {ScaffMatch}: scaffolding algorithm based on
+  maximum weight matching. Bioinformatics  (2015)
+
+\bibitem{ilp_montpellier}
+Nicolas, B., Annie, C., Coletta, R., de~Givry, S., Leleux, P., Thomas, S.: An
+  integer linear programming approach for genome scaffolding. In: Workshop on
+  Constraint based Methods for Bioinformatics (2015)
+
+\bibitem{Pevzner14082001}
+Pevzner, P.A., Tang, H., Waterman, M.S.: An {Eulerian} path approach to {DNA}
+  fragment assembly. PNAS  98(17),  9748--9753 (2001)
+
+\bibitem{BESST}
+Sahlin, K., Vezzi, F., Nystedt, B., Lundeberg, J., Arvestad, L.: {BESST} -
+  efficient scaffolding of large fragmented assemblies. BMC Bioinformatics  15,
+   281 (2014)
+
+\bibitem{Weber01051997}
+Weber, J.L., Myers, E.W.: Human whole-genome shotgun sequencing. Genome
+  Research  7(5),  401--409 (1997)
+
+\bibitem{weller2015exact}
+Weller, M., Chateau, A., Giroudeau, R.: Exact approaches for scaffolding. BMC
+  bioinformatics  16(Suppl 14), ~S2 (2015)
+
+\end{thebibliography}

@@ -1,0 +1,273 @@
+\documentclass{endmH}
+\usepackage{endmmacro}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{color}
+
+% The following is enclosed to allow easy detection of differences in
+% ascii coding.
+% Upper-case    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+% Lower-case    a b c d e f g h i j k l m n o p q r s t u v w x y z
+% Digits        0 1 2 3 4 5 6 7 8 9
+% Exclamation   !           Double quote "          Hash (number) #
+% Dollar        $           Percent      %          Ampersand     &
+% Acute accent  '           Left paren   (          Right paren   )
+% Asterisk      *           Plus         +          Comma         ,
+% Minus         -           Point        .          Solidus       /
+% Colon         :           Semicolon    ;          Less than     <
+% Equals        =           Greater than >          Question mark ?
+% At            @           Left bracket [          Backslash     \
+% Right bracket ]           Circumflex   ^          Underscore    _
+% Grave accent  `           Left brace   {          Vertical bar  |
+% Right brace   }           Tilde        ~
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\forLaterVersions}[1]{}
+
+\def\CC {{\mathbb C}}        
+\def\RR {{\mathbb R}}       
+\def\ZZ {{\mathbb Z}}      
+\def\NN {{\mathbb N}}     
+
+\newcommand{\Nat}{{\mathbb N}}
+\newcommand{\Real}{{\mathbb R}}
+\def\lastname{Please list your Lastname here}
+
+\begin{document}
+
+% DO NOT REMOVE: Creates space for Elsevier logo, ScienceDirect logo
+% and ENDM logo
+\begin{verbatim}\end{verbatim}\vspace{2.5cm}
+
+\begin{frontmatter}
+
+\title{Global Optimization for Scaffolding and Completing Genome Assemblies }\thanks{Preliminary version of this paper has been presented at the Workshop on Constraint-Based Methods for Bioinformatics 2016.}
+
+\author{Sebastien Fran\c{c}ois  \thanksref{sebemail}}
+\author{Rumen Andonov \thanksref{rumemail}\thanksref{Corrresponding}}
+\author{Dominique Lavenier \thanksref{domemail}}
+\address{IRISA/INRIA, Rennes, France}
+
+\author{Hristo Djidjev \thanksref{hriemail}}
+\address{Los Alamos National Laboratory,
+	Los Alamos, NM 87545, USA }
+   \thanks[sebemail]{Email:
+   \href{mailto:sefra35@gmail.com} {\texttt{\normalshape
+   sefra35@gmail.com}}} 
+   \thanks[rumemail]{Email:
+   \href{randonov@irisa.fr} {\texttt{\normalshape
+   randonov@irisa.fr}}}
+   \thanks[Corrresponding]{{\texttt{\normalshape Corresponding author }}} 
+   \thanks[domemail]{Email:
+   \href{lavenier@irisa.fr} {\texttt{\normalshape
+   lavenier@irisa.fr}}}
+   \thanks[hriemail]{Email:
+   \href{djidjev@lanl.gov} {\texttt{\normalshape
+   djidjev@lanl.gov}}}
+   
+
+\begin{abstract}
+We develop a method for solving genome scaffolding  as a problem of finding a long simple path in a graph defined by the contigs that satisfies additional constraints encoding the insert-size information. Then we solve the resulting mixed integer linear program to optimality using the Gurobi solver. We test our algorithm on several chloroplast genomes and show that it %is fast and 
+outperforms other widely-used assembly solvers by the accuracy of the results.
+\end{abstract}
+
+\forLaterVersions
+{\begin{keyword}
+genome assembly, scaffolding, contig, longest  simple weighted  path problem,
+integer programming  
+\end{keyword}}
+
+\end{frontmatter}
+
+\input{rev_inoc_intro}
+\label{sec:generalities}
+
+
+
+\section{Modeling the scaffolding problem}\label{Model description}
+\subsection{Graph Modeling}\label{sub:Graph_Modelling}
+
+
+
+We model the problem of scaffolding as path finding in a directed graph $G=(V,E)$ that we call a contig graph, where  both  vertices $V$ and  edges $E$ are weighted. The set of vertices $V$ is generated  based on the set $C$ of the contigs according the following rules:  the contig $i$ is represented by at least  two vertices $v_i$ and $v'_i$ (forward/inverse  orientation respectively).  If the contig $i$ is repeated $k_i$ times, it generates $2k_i$ vertices.  %The values of $k_i$ are computed in the contigs-generation phase.
+Denote $N= \sum_{i\in C} k_i$, therefore $|V|=2N$.
+
+ The edges are generated following given patterns---a set of known overlaps/distances between the contigs. 
+ Any edge is given in the graph $G$ in its forward/inverse orientation. We denote by $e_{ij}$ the edge joining vertices $v_i$ and $v_j$ and the inverse of
+  edge  $e_{ij}$ is  $e_{j^{'}i^{'}}$.
+ For any $i$, the weight $w_i$ on a vertex $v_i$ corresponds to the length of the contig $i$, while the weight $l_{ij}$ on the edge  $e_{ij}$  corresponds to the value of the  overlap/distance between  contigs $i$ and $j$.   The problem then is to find a path in the graph $G$ such that the total  length (the sum over the traversed vertices and edges) is maximized, %as close as possible to a given distance $L$,  
+ while a set of additional constraints are also satisfied:
+\begin{itemize}
+%  \item The first and the last vertices (denoted by $s$ and $t$ respectively) are known. They are  visited exactly once, while all other nodes are visited at most once. 
+  \item For any $i$, either vertex $v_i$ or $v'_i$ is visited  (participates in the path).
+  \item The orientations of the nodes does not contradict the constraints
+    imposed by  mate-pairs. This is at least partially enforced by the
+    construction of $G$. 
+\end{itemize}
+
+
+
+To any edge $e\in E$ we associate a variable $x_e$.  Its value is set to 1, if the corresponding  edge participates in the assembled genome sequence (the associated path in our case), otherwise its value is set to 0. 
+ There are two kinds of edges: edges corresponding to overlaps between contigs, denote them by $O$ (from overlaps), and edges associated with mate-pairs relationships, denote them by $L$ (from  links).  We therefore  have $E=L \cup O$.  Let $l_e$ be the length of the edge $e=(u,v)$.  We have $l_e < 0$ and $|l_e|< \min{\{w(u),w(v)}\}$,  $\forall e \in O$, and  $l_e > 0  ~\forall e \in L$.  Let  $w_v$ be the length of the contig corresponding to vertex $v$ and denote $W= \sum_{v \in V} w_v$. %A vertex $v$ is called \emph{big} if $w_v > l_e ~~\forall e \in L$ holds. Let $B$ denote the set of big vertices.  The set of others, \emph{small}, vertices  is denoted by $S$. We therefore have  $V=B\cup S$. 
+
+%The set of vertices  can be partitioned in three subsets $V=S \cup T \cup U$ such that each $v\in S$ is a head of some $e\in L$, and each $v\in T$ is a tail of some $e\in L$.
+
+%\newpage 
+
+Let $A^+(v) \subset E $ (resp. $A^-(v) \subset E  $ ) denote  the subset  of arcs in $E$ leaving (resp. entering)  node $v$. 
+
+\subsection{Mixed Integer Linear Programming Formulation} % (fold)
+\label{sub:first step model}
+
+                   
+We  associate a binary variable for any edge of the graph, i.e.
+   \begin{equation}\label{binary_edges}
+    \forall e \in O:  x_e \in \{0,1\} \mbox{ and } \forall e \in L:  g_e \in \{0,1\}. 
+   \end{equation}
+   
+ Furthermore, to any vertex $v\in V$ we associate three variables,  $i_v$, $s_v$, and $t_v$, which stand respectively for intermediate, source, and target for some path, and satisfy
+
+  \begin{equation}\label{reals}
+ %\forall  v\in V :  
+  0 \leq i_v \leq 1, ~~ 0 \leq s_v \leq 1, ~ 0 \leq t_v \leq  1.
+ \end{equation}
+ 
+ All three variables are set to zero when the associated vertex $v$ participates in none of the paths. 
+ Otherwise, $v$ can be  either a source/initial (noted by $s_v=1, t_v=0, i_v=0$), or a target/final ($t_v=1,  s_v=0, i_v=0$), or an intermediate vertex, in which case the equalities $i_v=1, t_v=0$ and $s_v=0$ hold.  Moreover, each vertex (or its inverse) can  be visited  at most once, i.e.
+                   \begin{equation}\label{at_most_one}
+                   \forall (v,v') :  i_v+i_{v'} + s_v+s_{v'} + t_v+t_{v'} \leq 1.
+                   \end{equation}
+
+
+The four possibles states for a vertex $v$ (to belong to none of the paths, or otherwise, to be a source, a target,  or an intermediate  vertex in some path) are provided by the following  two constraints 
+
+ \begin{equation}\label{output-edges}
+s_v + i_v =  \sum_{e\in A^{+}(v)} x_e,  %\leq 1,  %\mbox{ and } \sum_{e\in A^{-}(v)} x_e  \leq  i_v+t_v 
+% \end{equation}
+% 
+% and 
+\quad
+% 
+%  \begin{equation}\label{input-edges}
+t_v  + i_v = \sum_{e\in A^{-}(v)} x_e. %\leq 1.  %\mbox{ and } \sum_{e\in A^{+}(v)} x_e  \leq  i_v + s_v .
+  \end{equation}
+  
+    
+   Finally, only one sequence (a single path) is searched for 
+    
+        \begin{equation}\label{one_paths}
+      \sum_{v \in V} s_v = 1  \mbox{ and }  \sum_{v \in V} t_v = 1.
+       \end{equation}
+                  
+           
+  
+    \begin{theorem}\label{vertices_are_binary}
+    The real variables $ i_v, s_v, t_v, \forall v \in V$ take binary values.
+    \end{theorem}
+   \begin{proof} Given in \cite{RR_9050}.
+   \end{proof}
+                      
+   We introduce a continuous variable $f_e \in  R^+$ to express the quantity of the flow circulating along the arc $e \in E$
+%                             
+  \begin{equation}\label{flow_condition}
+  \forall e \in E:  0 \leq f_e \leq Wx_e.   %\in \{0,1\} 
+  \end{equation}
+                                
+                     
+  
+  For $e\in O$, the value of $x_e$ is set to  $1$, if the arc $e$ carries some  flow and $0$, otherwise. In other words, no  flow can use  the arc $e$ when $x_e = 0$. \forLaterVersions {as ensured by constraint} % (\ref{flow_capacity}).
+   %  
+\forLaterVersions{
+       \begin{equation}\label{flow_capacity}
+    f_e \leq W x_e  ~~~~ \forall e \in O.
+       \end{equation}
+}
+       
+ We use the flows $f_e$ in the following constraints, $\forall v\in V$,
+         \begin{equation}\label{no_cycles}
+  \sum_{e\in A^{-}(v)} \!\!f_e  -  \!\!\sum_{e\in A^{+}(v)} \!\!f_e   \geq   (i_v + t_v) (w_v +   \!\!\sum_{e\in A^{-}(v)} \!\!l_e x_e) - W s_v, %+ t_v\sum_{e\in A^{-}(v)} f_e       
+\quad
+    W s_v \leq    \!\!\sum_{e\in A^{+}(v)} \!\!f_e. %\leq W
+    \end{equation}
+
+    
+The purpose of the last  two constraints is manifold.  When a vertex $v$ is a source ($s_v=1$), (\ref{no_cycles}) \forLaterVersions{and (\ref{initial_flow})} generates and outputs from it an initial flow of sufficiently big value ($W$ is enough in our case). When $v$ is an intermediate vertex  ($i_v=1$), constraint (\ref{no_cycles}) forces the flow to decrease by at least $l_{(u,v)}+w_v$  units when it moves from vertex $u$ to its adjacent vertex $v$. The value of the flow thus is decreasing and this feature forbids cycles in the context of (\ref{output-edges}).  When $v$ is  a final vertex, (\ref{no_cycles}) is simply a valid inequality for the input flow.% since the initial flow value is big enough. 
+  
+    
+We furthermore observe that because of (\ref{output-edges}), the constraint   (\ref{no_cycles}) can be written as follows 
+             \begin{equation}\label{no_cycles_linear}
+      \forall v\in V:\sum_{e\in A^{-}(v)} f_e  -  \sum_{e\in A^{+}(v)} f_e   \geq    (i_v+t_v) w_v +   \sum_{e\in A^{-}(v)} l_e x_e - W s_v. %+ t_v\sum_{e\in A^{-}(v)} f_e
+             \end{equation}
+             
+The constraint  (\ref{no_cycles_linear}) is  linear and we keep it in our model instead of  (\ref{no_cycles}).       
+
+
+Furthermore, binary variables $g_e$ are associated with links. For $(s,t) \in L$, the value of $g_{(s,t)}$ is set to  $1$ only if  both vertices $s$ and $t$ belong to the selected path and the length of the considered path between them is in the given interval  $[\underline{L}_{(s,t)},\overline{L}_{(s,t)}]$. Constraints related to links are :
+%
+ \begin{equation}\label{gst_left}
+ g_{(s,t)} \leq s_s+i_s+t_s \mbox{ and }  g_{(s,t)} \leq s_t+i_t+t_t
+       \end{equation}
+%       as well as
+  \begin{equation}\label{lbound}
+  \forall (s,t) \in L: 
+  \sum_{e\in A^{+}(s)} f_e - \sum_{e\in A^{-}(t)} f_e  \geq   \underline{L}_{(s,t)} g_{(s,t)} - M (1-g_{(s,t)})
+       \end{equation}
+         \begin{equation}\label{upbound}
+  \forall (s,t) \in L: 
+ \sum_{e\in A^{+}(s)} f_e - \sum_{e\in A^{-}(t)} f_e  \leq   \overline{L}_{(s,t)} g_{(s,t)}) + M (1-g_{(s,t)}),
+       \end{equation}
+%       
+where $M$ is some big constant.  
+         
+We search for a long path in the graph and such that as much as possible  mate-paired distances  are satisfied. The objective hence is : 
+%
+ \begin{equation}\label{all_coeff}
+ \max \left( \sum_{e\in O} x_e l_e  +   \sum_{v\in V} w_v ( i_v+ s_v + t_v ) + p \sum_{e\in L} g_e   \right)
+\end{equation}
+where $p$ is a parameter to be chosen as appropriate (currently $p=1$). 
+
+\forLaterVersions{\smallskip\textbf{Remark:} Note that omitting constraints  (\ref{one_paths}) %and keeping the objective and all other constraints in 
+from the above model generates a set of paths that cover  "optimally" the contig graph, rather than a single path.  We have tested this variant of the model, but the obtained solutions were too much fragmented and of worse  quality compared to the single-path model.}
+
+\input{rev_results}
+
+ \section{Conclusion}
+ 
+ We developed and tested  algorithms for scaffolding  and gap filling phases based on a version of the longest path problem and MILP representation. Our algorithms significantly outperform three of the best known scaffolding algorithms with respect to the quality of the scaffolds. Regardless of that, we consider the current results as a work in progress. The biggest challenge is to extend the method to much bigger genomes. We plan to use some additional ideas and careful implementation to increase the scalability \forLaterVersions{of the methods} without sacrificing the accuracy of the results.            
+
+
+ 
+\bibliographystyle{splncs03}
+\bibliography{scaffoldingbiblio}
+
+%\newpage\appendix
+%\noindent{\large \bf Appendix}\\[2ex]
+%
+%\section{Proof of Theorem \ref{vertices_are_binary}}
+%    \begin{proof} 
+% Let us analyse the four possibles cases deduced from   (\ref{output-edges}).
+% Denote $S^+= \sum_{e\in A^{+}(v)} x_e$ and $S^-=\sum_{e\in A^{-}(v)} x_e$.
+%  \begin{enumerate}
+%  \item[i)] $ S^+ = 0$ and $ S^- = 0$. 
+%  
+%  In this case  it follows  from (\ref{reals}) that  $s_v=i_v=t_v=0$. 
+%    \item[ii)] $ S^+ = 1$ and $ S^- = 1$.
+% 
+%The above is equivalent to  $s_v + i_v = 1$ and  $t_v + i_v = 1$, which leads to $s_v=t_v$.  Moreover, from (\ref{at_most_one}) we have $s_v=t_v=0$ and $i_v=1$.
+%    
+%\item[iii)] $ S^+ = 1$ and $S^- = 0$.
+%
+%The above is equivalent to  $s_v + i_v = 1$ and  $t_v + i_v = 0$, which leads to $s_v-t_v=1$.  Hence, from (\ref{reals}), we have $t_v=0$ and therefore   $s_v=1$ and $i_v=0$.
+%
+%
+%\item[iv)] $ S^+ = 0$ and $ S^- = 1$.
+%
+%This case is analogous to iii) and we have   $s_v=i_v=0$ and $t_v=1$. 
+%  \end{enumerate} 
+%    \end{proof}
+%    
+%    
+%\newpage
+
+ % \input{revised_table3}    
+\end{document}
